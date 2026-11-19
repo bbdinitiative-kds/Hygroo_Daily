@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10172a">
+  <title>Hygroo-Daily | Uniform Check</title>
+  <style>
+    :root{--ink:#f6f7ff;--muted:#b8c1d9;--line:rgba(255,255,255,.16);--glass:rgba(255,255,255,.10);--blue:#6d8cff;--cyan:#4de1d2;--pink:#b56cff;--bad:#ff758b;--good:#52e0a1}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(125deg,#10172a,#202d56,#38285c,#102f43);background-size:300% 300%;animation:bg 18s ease infinite}
+    @keyframes bg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    button,input{font:inherit} button{cursor:pointer;border:0;color:#10172a;font-weight:750;padding:12px 18px;border-radius:14px;background:linear-gradient(110deg,var(--cyan),#9db2ff);box-shadow:0 8px 24px #0003}button:disabled{opacity:.4;cursor:not-allowed}
+    .ghost{background:rgba(255,255,255,.10);border:1px solid var(--line);color:var(--ink);box-shadow:none}.danger{background:rgba(255,117,139,.16);border:1px solid #ff758b66;color:#fff}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px max(18px,calc((100vw - 980px)/2));}
+    .brand{font-size:19px;font-weight:850;letter-spacing:.2px}.brand span{color:var(--cyan)}main{width:min(980px,calc(100% - 28px));margin:12px auto 48px}
+    .card{background:var(--glass);border:1px solid var(--line);border-radius:24px;padding:22px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 60px #0002;margin-bottom:16px}
+    h1,h2,h3,p{margin-top:0}h1{font-size:clamp(25px,5vw,36px);line-height:1.15;margin-bottom:8px}h2{font-size:20px;margin-bottom:8px}.muted{color:var(--muted)}.small{font-size:12px;color:var(--muted)}.hidden{display:none!important}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px;margin:14px 0}.field label{font-size:13px;color:var(--muted)}input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:#0c1428aa;color:white;outline:none}input:focus{border-color:var(--cyan)}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.pill{display:inline-flex;align-items:center;gap:7px;border-radius:99px;padding:6px 11px;font-weight:750;font-size:12px;background:#ffffff16;border:1px solid var(--line)}.pill.good{color:var(--good)}.pill.bad{color:var(--bad)}
+    .permission{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.permission:last-child{border:0}
+    .video-wrap{position:relative;background:#070b14;border-radius:20px;overflow:hidden;min-height:250px;display:grid;place-items:center}video{display:block;width:100%;max-height:570px;object-fit:cover;transform:scaleX(-1)}.guide{position:absolute;inset:8% 16%;border:2px dashed #ffffffa8;border-radius:45% 45% 20% 20%;pointer-events:none;box-shadow:0 0 0 999px #0002}.guide:after{content:"FACE  •  CHEST  •  LANYARD";position:absolute;bottom:-30px;left:0;right:0;text-align:center;color:#fff;font-size:11px;letter-spacing:1px;text-shadow:0 1px 5px #000}
+    .preview{width:100%;border-radius:18px;display:block;background:#080d18}.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.check{border:1px solid var(--line);background:#ffffff0b;border-radius:15px;padding:13px}.check strong{display:block;margin-bottom:3px}.remarks{padding:12px 14px;background:#07122666;border-radius:14px;color:#e5eaff}
+    footer{text-align:center;color:#b8c1d9;font-size:12px;padding:8px 20px 28px}.notice{border-left:3px solid #ffd36a;padding:10px 13px;background:#ffd36a12;border-radius:8px;color:#ffe8ad;font-size:13px;margin-top:12px}
+    @media(max-width:650px){.grid{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.card{padding:17px}header{padding:15px}.video-wrap{min-height:220px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">Hygroo<span>-Daily</span></div>
+  <button id="logoutBtn" class="ghost hidden" type="button">Log out</button>
+</header>
+<main>
+  <section id="loginView" class="card">
+    <p class="pill">FIELD EMPLOYEE · UNIFORM CHECK</p>
+    <h1>Daily uniform verification</h1>
+    <p class="muted">Sign in to capture your daily uniform photo.</p>
+    <form id="loginForm">
+      <div class="field"><label for="employeeId">Employee ID</label><input id="employeeId" autocomplete="username" required placeholder="Enter your employee ID"></div>
+      <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Enter password"></div>
+      <button type="submit">Log in</button>
+    </form>
+    <div class="notice">Prototype mode: this sample uses a local demo sign-in. Connect a secure authentication service before real employee use. Do not enter a real password here.</div>
+  </section>
+
+  <section id="homeView" class="hidden">
+    <div class="card">
+      <div class="row"><div><p class="small">SIGNED-IN EMPLOYEE</p><h2 id="employeeName">Employee</h2><p class="muted" id="employeeLabel"></p></div><span class="pill good">● Ready to check in</span></div>
+      <div class="permission"><div><strong>Camera access</strong><div class="small" id="cameraStatus">Not checked</div></div><span id="cameraIcon">○</span></div>
+      <div class="permission"><div><strong>Location access</strong><div class="small" id="locationStatus">Not checked</div></div><span id="locationIcon">○</span></div>
+      <div class="actions"><button id="permissionBtn" type="button">Check camera & location</button><button id="startBtn" type="button" disabled>Open camera</button></div>
+      <p class="small" id="permissionMessage" aria-live="polite">Allow camera and location access to continue.</p>
+      <div class="notice">Location is used temporarily to look up a place name. This prototype does not display or save GPS coordinates.</div>
+    </div>
+  </section>
+
+  <section id="captureView" class="hidden">
+    <div class="card">
+      <div class="row"><div><h2>Frame your photo</h2><p class="muted">Keep your face, vivo uniform logo and lanyard in frame.</p></div><span class="pill" id="placePill">Finding place…</span></div>
+      <div class="video-wrap"><video id="video" autoplay playsinline muted></video><div class="guide"></div></div>
+      <div class="actions"><button id="captureBtn" type="button">Capture photo</button><button id="backBtn" class="ghost" type="button">Cancel</button></div>
+    </div>
+  </section>
+
+  <section id="draftView" class="hidden">
+    <div class="card">
+      <div class="row"><div><h2>Review your uniform check</h2><p class="muted">The image below includes the check details watermark.</p></div><span class="pill" id="overallStatus">Checking…</span></div>
+      <canvas id="resultCanvas" class="preview"></canvas>
+      <div class="checks">
+        <div class="check"><strong id="faceResult">Face: pending</strong><span class="small">Face clearly visible</span></div>
+        <div class="check"><strong id="uniformResult">Uniform: pending</strong><span class="small">vivo logo on dress</span></div>
+        <div class="check"><strong id="lanyardResult">ID card: pending</strong><span class="small">“vivo | Ycpl” lanyard</span></div>
+      </div>
+      <div id="remarks" class="remarks">Please wait while checks are processed.</div>
+      <div class="actions"><button id="downloadBtn" type="button" disabled>Download & save entry</button><button id="shareBtn" class="ghost" type="button" disabled>Share & save entry</button><button id="retakeBtn" class="ghost" type="button">Recapture</button><button id="finishBtn" class="danger" type="button">Exit</button></div>
+      <div class="notice">Demo checks only: this page does not contain an AI model or save records to a database/Google Sheet. The displayed results are placeholders, not a real uniform verification.</div>
+    </div>
+  </section>
+
+  <section id="doneView" class="card hidden">
+    <h1>All done!</h1><p class="muted">Your photo review session has ended.</p><button id="anotherBtn" type="button">Take another photo</button>
+  </section>
+</main>
+<footer>Hygroo-Daily · Browser prototype · Use HTTPS (GitHub Pages supports HTTPS)</footer>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const views = ["loginView","homeView","captureView","draftView","doneView"];
+  let employee = null, stream = null, latestPosition = null, placeName = "Place unavailable";
+  let cleanBlob = null, watermarkedBlob = null, saved = false, checks = null;
+
+  function show(view){ views.forEach(v => $(v).classList.toggle("hidden",v!==view)); $("logoutBtn").classList.toggle("hidden",view==="loginView"||view==="doneView"); }
+  function stopCamera(){ if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;} $("video").srcObject=null; }
+  function setPermission(camera,location,msg){
+    $("cameraStatus").textContent=camera?"Granted":"Not granted"; $("cameraIcon").textContent=camera?"✓":"○";
+    $("locationStatus").textContent=location?"Granted":"Not granted"; $("locationIcon").textContent=location?"✓":"○";
+    $("startBtn").disabled=!(camera&&location); $("permissionMessage").textContent=msg;
+  }
+  function getLocation(){
+    return new Promise((resolve,reject)=>{
+      if(!navigator.geolocation)return reject(new Error("Geolocation is not supported by this browser."));
+      navigator.geolocation.getCurrentPosition(async pos=>{
+        latestPosition={latitude:pos.coords.latitude,longitude:pos.coords.longitude};
+        try{
+          const url=`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(latestPosition.latitude)}&lon=${encodeURIComponent(latestPosition.longitude)}`;
+          const r=await fetch(url,{headers:{"Accept":"application/json"}}); if(!r.ok)throw new Error();
+          const d=await r.json(); const a=d.address||{};
+          placeName=[a.village||a.town||a.city||a.suburb||a.county,a.state].filter(Boolean).join(", ")||"Place unavailable";
+        }catch(e){placeName="Place unavailable";}
+        resolve(placeName);
+      },err=>reject(new Error(err.message||"Location permission denied.")),{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+    });
+  }
+  async function checkPermissions(){
+    let cameraOK=false, locationOK=false, errors=[];
+    try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false});s.getTracks().forEach(t=>t.stop());cameraOK=true;}catch(e){errors.push("Camera: "+e.message);}
+    try{await getLocation();locationOK=true;}catch(e){errors.push("Location: "+e.message);}
+    setPermission(cameraOK,locationOK,errors.length?errors.join(" | "):"Both permissions are ready. You can open the camera.");
+    if(locationOK)$("placePill").textContent=placeName;
+  }
+  $("loginForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    const id=$("employeeId").value.trim(), password=$("password").value;
+    if(!id||!password)return;
+    // DEMO ONLY: never use this local, unverified sign-in for production.
+    employee={id,name:"Employee "+id}; $("employeeName").textContent=employee.name; $("employeeLabel").textContent="Employee ID: "+employee.id;
+    $("password").value=""; show("homeView"); setPermission(false,false,"Allow camera and location access to continue.");
+  });
+  $("permissionBtn").addEventListener("click",checkPermissions);
+  $("startBtn").addEventListener("click",async()=>{
+    try{
+      await getLocation();
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false});
+      $("video").srcObject=stream; $("placePill").textContent=placeName; show("captureView");
+    }catch(e){alert("Camera/location permission is required: "+e.message);show("homeView");}
+  });
+  function canvasToBlob(canvas,type="image/jpeg",quality=.78){return new Promise(resolve=>canvas.toBlob(resolve,type,quality));}
+  function drawWatermark(sourceCanvas, result){
+    const c=$("resultCanvas"),ctx=c.getContext("2d"),w=sourceCanvas.width,h=sourceCanvas.height;
+    c.width=w;c.height=h;ctx.drawImage(sourceCanvas,0,0);
+    const panelH=Math.max(116,Math.round(h*.23)), y=h-panelH;
+    ctx.fillStyle="rgba(8,16,34,.78)";ctx.fillRect(0,y,w,panelH);
+    ctx.fillStyle="#fff";ctx.font=`600 ${Math.max(14,Math.round(w*.027))}px Arial`;
+    const date=new Date().toLocaleString();
+    ctx.fillText(`${employee.name} · ID ${employee.id}`,Math.round(w*.035),y+Math.round(panelH*.27));
+    ctx.fillText(`${date} · ${placeName}`,Math.round(w*.035),y+Math.round(panelH*.51));
+    ctx.fillStyle=result.ok?"#52e0a1":"#ff758b";
+    ctx.font=`bold ${Math.max(15,Math.round(w*.03))}px Arial`;
+    ctx.fillText(`STATUS: ${result.ok?"OK":"NOT OK"}  |  SCORE: ${result.score}/100`,Math.round(w*.035),y+Math.round(panelH*.79));
+    return c;
+  }
+  $("captureBtn").addEventListener("click",async()=>{
+    try{
+      $("captureBtn").disabled=true;
+      await getLocation(); // Refresh GPS immediately before capture; coordinates remain in memory only.
+      const v=$("video"),c=document.createElement("canvas");
+      const scale=Math.min(1,1280/v.videoWidth);c.width=Math.round(v.videoWidth*scale);c.height=Math.round(v.videoHeight*scale);
+      c.getContext("2d").translate(c.width,0);c.getContext("2d").scale(-1,1);c.getContext("2d").drawImage(v,0,0,c.width,c.height);
+      cleanBlob=await canvasToBlob(c); saved=false;
+      stopCamera(); show("draftView");
+      // PLACEHOLDER ONLY. Replace with a secure server-side AI verification API.
+      checks={face:true,uniform:false,lanyard:false};
+      checks.score=(checks.face?34:0)+(checks.uniform?33:0)+(checks.lanyard?33:0);
+      checks.ok=checks.face&&checks.uniform&&checks.lanyard;
+      $("faceResult").textContent="✓ Face: OK"; $("faceResult").style.color="var(--good)";
+      $("uniformResult").textContent="✕ Uniform: Not OK"; $("uniformResult").style.color="var(--bad)";
+      $("lanyardResult").textContent="✕ ID card: Not visible"; $("lanyardResult").style.color="var(--bad)";
+      $("overallStatus").textContent="STATUS: NOT OK";$("overallStatus").className="pill bad";
+      $("remarks").textContent="Demo result: AI verification is not connected. Uniform logo and lanyard checks must be performed by a real server-side model.";
+      drawWatermark(c,checks);watermarkedBlob=await canvasToBlob($("resultCanvas"));
+      $("downloadBtn").disabled=false;$("shareBtn").disabled=false;
+    }catch(e){alert("Could not capture photo: "+e.message);show("homeView");}
+    finally{$("captureBtn").disabled=false;}
+  });
+  async function saveOnce(){
+    if(saved)return;
+    // TODO production: POST clean photo + place + AI results to authenticated backend.
+    // Backend should create Uniform Checks row once, remove Check Draft, then append to Google Sheet.
+    saved=true;
+  }
+  $("downloadBtn").addEventListener("click",async()=>{
+    await saveOnce();const url=URL.createObjectURL(watermarkedBlob),a=document.createElement("a");
+    a.href=url;a.download=`Hygroo-Daily-${employee.id}-${Date.now()}.jpg`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  });
+  $("shareBtn").addEventListener("click",async()=>{
+    await saveOnce();const file=new File([watermarkedBlob],`Hygroo-Daily-${employee.id}.jpg`,{type:"image/jpeg"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:"Hygroo-Daily uniform check"});}catch(e){}}
+    else{const url=URL.createObjectURL(watermarkedBlob);window.open(url,"_blank");setTimeout(()=>URL.revokeObjectURL(url),10000);alert("File sharing is not supported here. The photo was opened; use your browser's save/share option.");}
+  });
+  $("retakeBtn").addEventListener("click",()=>{cleanBlob=null;watermarkedBlob=null;checks=null;saved=false;show("homeView");checkPermissions();});
+  $("finishBtn").addEventListener("click",()=>{cleanBlob=null;watermarkedBlob=null;checks=null;stopCamera();show("doneView");});
+  $("anotherBtn").addEventListener("click",()=>{show("homeView");checkPermissions();});
+  $("backBtn").addEventListener("click",()=>{stopCamera();show("homeView");});
+  $("logoutBtn").addEventListener("click",()=>{stopCamera();employee=null;show("loginView");});
+  window.addEventListener("beforeunload",stopCamera);
+  show("loginView");
+})();
+</script>
+</body>
+</html>
